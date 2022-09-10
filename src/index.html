@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Express and Socket.io</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="m-3 w-50 mx-auto">
+
+        <h3>Messages</h3>
+
+        <form class="input-group mb-3" onsubmit="sendMessage(event)">
+            <input class="form-control" type="text" id="message" placeholder="Write your message">
+            <button id="btnSend" class="btn btn-primary">Send</button>
+        </form>
+
+        <ul id="msgList" class="list-group">
+            <!-- Items will be here -->
+        </ul>
+
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io()
+
+        socket.on('message', addMessage)
+
+        const $msg = document.getElementById('message')
+        const $btn = document.getElementById('btnSend')
+        const $box = document.getElementById('msgList')
+
+        $btn.addEventListener('click', sendMessage)
+
+        function sendMessage(event) {
+            event.preventDefault()
+            socket.emit('message', $msg.value)
+            addMessage($msg.value)
+            $msg.value = null
+        }
+
+        function addMessage(message) {
+            const $item = document.createElement('li')
+            $item.classList.add('list-group-item')
+            $item.textContent = message
+            $box.prepend($item)
+        }
+    </script>
+</body>
+</html>
